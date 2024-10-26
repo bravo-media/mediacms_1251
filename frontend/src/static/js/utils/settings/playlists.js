@@ -14,6 +14,7 @@ export function init(plists) {
         while (i < plists.mediaTypes.length) {
           switch (plists.mediaTypes[i]) {
             case 'audio':
+            case 'image':
             case 'video':
               PLAYLISTS.mediaTypes.push(plists.mediaTypes[i]);
               break;
@@ -26,7 +27,7 @@ export function init(plists) {
   }
 
   if (!PLAYLISTS.mediaTypes.length) {
-    PLAYLISTS.mediaTypes = ['audio', 'video'];
+    PLAYLISTS.mediaTypes = ['audio', 'video', 'image'];
   }
 }
 

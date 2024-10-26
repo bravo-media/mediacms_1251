@@ -175,6 +175,8 @@ class Media(models.Model):
         help_text="media file",
     )
 
+
+    body_text = models.TextField(blank=True, help_text="Text that goes under the image")
     media_info = models.TextField(blank=True, help_text="extracted media metadata info")
 
     media_type = models.CharField(

@@ -11,6 +11,9 @@ export default class ViewerInfoVideoTitleBanner extends ViewerInfoTitleBanner {
     const displayViews = PageStore.get('config-options').pages.media.displayViews && void 0 !== this.props.views;
 
     const mediaState = MediaPageStore.get('media-data').state;
+    const st =  PlaylistsContext._currentValue.mediaTypes.indexOf(MediaPageStore.get('media-type'));
+    console.log(st);
+    console.log(MediaPageStore.get('media-type'));
 
     let stateTooltip = '';
 

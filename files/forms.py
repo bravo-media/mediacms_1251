@@ -26,12 +26,11 @@ class MediaForm(forms.ModelForm):
             "thumbnail_time",
             "reported_times",
             "is_reviewed",
-            "allow_download",
+            "allow_download",   
+            "body_text",   
         )
         widgets = {
-            "tags": MultipleSelect(),
         }
-
     def __init__(self, user, *args, **kwargs):
         self.user = user
         super(MediaForm, self).__init__(*args, **kwargs)

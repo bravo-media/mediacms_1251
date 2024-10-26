@@ -9950,7 +9950,7 @@ Tech.withSourceHandlers = function (_Tech) {
     // then we are loading something new
     // than clear all of our current tracks
     if (this.currentSource_) {
-      this.clearTracks(['audio', 'video']);
+      this.clearTracks(['audio', 'video', 'image']);
       this.currentSource_ = null;
     } // always clean up auto-text tracks
 

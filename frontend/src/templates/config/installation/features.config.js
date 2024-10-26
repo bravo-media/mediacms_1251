@@ -45,6 +45,6 @@ module.exports = {
     hideAuthor: false,
   },
   playlists: {
-    mediaTypes: ['audio', 'video'],
+    mediaTypes: ['audio', 'video', 'image'],
   },
 };
