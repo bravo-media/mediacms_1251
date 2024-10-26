@@ -32,6 +32,7 @@ class MediaForm(forms.ModelForm):
             "allow_download",   
         )
         widgets = {
+            'add_date': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
         }
     def __init__(self, user, *args, **kwargs):
         self.user = user

@@ -12,9 +12,16 @@ export function PlaylistCreationForm(props) {
 
   const descriptionRef = useRef(null);
   const descriptionInputRef = useRef(null);
+  const nowDateTime = new Date();
 
   const [id, setId] = useState(props.id || null);
   const [title, setTitle] = useState(props.id ? PlaylistPageStore.get('title') : '');
+  const [start_date, setStartDate] = useState(props.id ? PlaylistPageStore.get('start_date') ?  PlaylistPageStore.get('start_date') : nowDateTime.toISOString() : nowDateTime.toISOString());
+  const [end_date, setEndDate] = useState(props.id ? PlaylistPageStore.get('end_date')  ?  PlaylistPageStore.get('end_date') : nowDateTime.toISOString() : nowDateTime.toISOString());
+  const [start_time, setStartTime] = useState(props.id ? PlaylistPageStore.get('start_time')  ?  PlaylistPageStore.get('start_time') : nowDateTime.toISOString() : nowDateTime.toISOString());
+  const [end_time, setEndTime] = useState(props.id ? PlaylistPageStore.get('end_time')  ?  PlaylistPageStore.get('end_time') : nowDateTime.toISOString() : nowDateTime.toISOString());
+  const [playlist_play_type, setPlaylist_play_type] = useState(props.id ? PlaylistPageStore.get('playlist_play_type')  ?  PlaylistPageStore.get('playlist_play_type') : 'normal' : 'normal');
+
   const [description, setDescription] = useState(props.id ? PlaylistPageStore.get('description') : '');
   const [descriptionLineHeight, setDescriptionLineHeight] = useState(-1);
   /*const [ selectedPrivacy, setSelectedPrivacy ] = useState( 'public' );*/
@@ -69,12 +76,22 @@ export function PlaylistCreationForm(props) {
         PlaylistPageActions.updatePlaylist({
           title: title,
           description: description,
+          playlist_play_type: playlist_play_type,
+          start_date : start_date ? start_date :nowDateTime,
+          end_date : end_date ? end_date :nowDateTime,
+          start_time : start_time ? start_time :nowDateTime,
+          end_time : end_time ? end_time :nowDateTime,
           // privacy: selectedPrivacy,
         });
       } else {
         MediaPageActions.createPlaylist({
           title: title,
           description: description,
+          playlist_play_type: playlist_play_type,
+          start_date : start_date,
+          end_date : end_date,
+          start_time : start_time,
+          end_time : end_time,
           // privacy: selectedPrivacy,
         });
       }
@@ -155,6 +172,26 @@ export function PlaylistCreationForm(props) {
         ></textarea>
       </div>
 
+
+      <div className="playlist-form-field playlist-play-type">
+        <span className="playlist-form-label">Playlist Play Type</span>
+        <label>
+  <select id="browsers" defaultValue={playlist_play_type} value={playlist_play_type} onChange={(e)=>{
+      setPlaylist_play_type(e.target.value);
+      console.log(e.target.value);
+
+  }}>
+    <option value="normal">Normal</option>
+    <option value="schedueleddate">Schedueled Date Range</option>
+    <option value="schedueledtime">Schedueled Time</option>
+    <option value="schedueleddatetime">Schedueled Date Time Range</option>
+  </select>
+        </label>
+      </div>
+
+      
+
+
       {/*<div className="playlist-form-field playlist-privacy">
 					<span className="playlist-form-label">Privacy</span>
 					<label><input ref="privacyValue" type="radio" name="privacy" value="public" checked={ 'public' === selectedPrivacy } onChange={ onPrivacyChoose } /><span>Public</span></label>
@@ -170,6 +207,7 @@ export function PlaylistCreationForm(props) {
           {id ? 'UPDATE' : 'CREATE'}
         </button>
       </div>
+
     </div>
   );
 }

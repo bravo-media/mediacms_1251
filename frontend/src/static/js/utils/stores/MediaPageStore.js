@@ -762,6 +762,12 @@ class MediaPageStore extends EventEmitter {
           {
             title: action.playlist_data.title,
             description: action.playlist_data.description,
+            playlist_play_type : action.playlist_data.playlist_play_type,
+            start_date : action.playlist_data.start_date,
+            end_date : action.playlist_data.end_date,
+            start_time : action.playlist_data.start_time,
+            end_time : action.playlist_data.end_time,
+            
           },
           {
             headers: {

@@ -53,6 +53,13 @@ SPECIAL_STATES = (
     ("topimage", "Top Image, Body Text"),
 )
 
+PLAYLIST_PLAY_TYPE = (
+    ("normal", "Normal"),
+    ("schedueleddate", "Schedueled Date Range"),
+    ("schedueledtime", "Schedueled Time"),
+    ("schedueleddatetime", "Schedueled Date Time Range"),
+)
+
 
 # each uploaded Media gets a media_type hint
 # by helpers.get_file_type
@@ -261,6 +268,7 @@ class Media(models.Model):
         db_index=True,
         help_text="Create composited media.",
     )
+
 
     tags = models.ManyToManyField("Tag", blank=True, help_text="select one or more out of the existing tags")
 
@@ -1290,6 +1298,17 @@ class Playlist(models.Model):
     media = models.ManyToManyField(Media, through="playlistmedia", blank=True)
 
     title = models.CharField(max_length=100, db_index=True)
+    start_date = models.DateTimeField(auto_now_add=True, db_index=True, help_text="start date", blank=True, null=True, editable=True)
+    end_date = models.DateTimeField(auto_now_add=True, db_index=True, help_text="end date", blank=True, null=True, editable=True)
+    
+    start_time = models.DateTimeField(auto_now_add=True, db_index=True, help_text="start time", blank=True, null=True, editable=True)
+    end_time = models.DateTimeField(auto_now_add=True, db_index=True, help_text="end time", blank=True, null=True, editable=True)
+    playlist_play_type = models.CharField(
+        max_length=100,
+        choices=PLAYLIST_PLAY_TYPE,
+        default="normal",
+        db_index=True,
+    )
 
     uid = models.UUIDField(unique=True, default=uuid.uuid4)
 

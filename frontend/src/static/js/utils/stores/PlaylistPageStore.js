@@ -110,6 +110,16 @@ class PlaylistPageStore extends EventEmitter {
         return null;
       case 'description':
         return PlaylistPageStoreData[this.id].data.description || null;
+      case 'playlist_play_type':
+        return PlaylistPageStoreData[this.id].data.playlist_play_type || null;
+      case 'start_date':
+        return PlaylistPageStoreData[this.id].data.start_date || null;
+      case 'end_date':
+        return PlaylistPageStoreData[this.id].data.end_date || null;
+      case 'start_time':
+        return PlaylistPageStoreData[this.id].data.start_time || null;
+      case 'end_time':
+        return PlaylistPageStoreData[this.id].data.end_time || null;
       case 'author-username':
         return PlaylistPageStoreData[this.id].data.user || null; // TODO: Recheck this, is this same with 'author-name'?
       case 'author-name':
@@ -147,6 +157,12 @@ class PlaylistPageStore extends EventEmitter {
     if (response && response.data) {
       PlaylistPageStoreData[this.id].data.title = response.data.title;
       PlaylistPageStoreData[this.id].data.description = response.data.description;
+      PlaylistPageStoreData[this.id].data.playlist_play_type = response.data.playlist_play_type;
+      PlaylistPageStoreData[this.id].data.start_date = response.data.start_date;
+      PlaylistPageStoreData[this.id].data.end_date = response.data.end_date;
+      PlaylistPageStoreData[this.id].data.start_time = response.data.start_time;
+      PlaylistPageStoreData[this.id].data.end_time = response.data.end_time;
+      
       this.emit('playlist_update_completed', response.data);
     }
   }
@@ -188,6 +204,12 @@ class PlaylistPageStore extends EventEmitter {
           {
             title: action.playlist_data.title,
             description: action.playlist_data.description,
+            playlist_play_type : action.playlist_data.playlist_play_type,
+            start_date : action.playlist_data.start_date,
+            end_date : action.playlist_data.end_date,
+            start_time : action.playlist_data.start_time,
+            end_time : action.playlist_data.end_time,
+
           },
           {
             headers: {
