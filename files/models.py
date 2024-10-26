@@ -47,6 +47,13 @@ MEDIA_STATES = (
     ("unlisted", "Unlisted"),
 )
 
+
+SPECIAL_STATES = (
+    ("normal", "Normal Media"),
+    ("topimage", "Top Image, Body Text"),
+)
+
+
 # each uploaded Media gets a media_type hint
 # by helpers.get_file_type
 
@@ -101,6 +108,14 @@ def original_thumbnail_file_path(instance, filename):
 
     return settings.THUMBNAIL_UPLOAD_DIR + "user/{0}/{1}".format(instance.user.username, filename)
 
+def top_thumbnail_file_path(instance, filename):
+    """Helper function to place top image thumbnail file"""
+
+    return settings.BACKGROUND_UPLOAD_DIR + "user/{0}/{1}".format(instance.user.username, filename)
+def logo_thumbnail_file_path(instance, filename):
+    """Helper function to place top image thumbnail file"""
+
+    return settings.LOGO_UPLOAD_DIR + "user/{0}/{1}".format(instance.user.username, filename)
 
 def subtitles_file_path(instance, filename):
     """Helper function to place subtitle file"""
@@ -118,7 +133,7 @@ def category_thumb_path(instance, filename):
 class Media(models.Model):
     """The most important model for MediaCMS"""
 
-    add_date = models.DateTimeField("Date produced", blank=True, null=True, db_index=True)
+    add_date = models.DateTimeField("Date produced", blank=True, null=True, db_index=True, editable=True)
 
     allow_download = models.BooleanField(default=True, help_text="Whether option to download media is shown")
 
@@ -237,7 +252,14 @@ class Media(models.Model):
         choices=MEDIA_STATES,
         default=helpers.get_portal_workflow(),
         db_index=True,
-        help_text="state of Media",
+        help_text="state of Media.",
+    )
+    special_state = models.CharField(
+        max_length=100,
+        choices=SPECIAL_STATES,
+        default="normal",
+        db_index=True,
+        help_text="Create composited media.",
     )
 
     tags = models.ManyToManyField("Tag", blank=True, help_text="select one or more out of the existing tags")
@@ -272,6 +294,29 @@ class Media(models.Model):
         verbose_name="Upload image",
         help_text="This image will characterize the media",
         upload_to=original_thumbnail_file_path,
+        processors=[ResizeToFit(width=720, height=None)],
+        format="JPEG",
+        options={"quality": 85},
+        blank=True,
+        max_length=500,
+    )
+
+    top_image = ProcessedImageField(
+        verbose_name="Upload Top Image",
+        help_text="This image will be placed above the body text.",
+        upload_to=top_thumbnail_file_path,
+        processors=[ResizeToFit(width=720, height=None)],
+        format="JPEG",
+        options={"quality": 85},
+        blank=True,
+        max_length=500,
+    )
+
+
+    logo_image = ProcessedImageField(
+        verbose_name="Upload Logo Image",
+        help_text="This image will be placed above the body text.",
+        upload_to=logo_thumbnail_file_path,
         processors=[ResizeToFit(width=720, height=None)],
         format="JPEG",
         options={"quality": 85},

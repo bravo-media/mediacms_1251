@@ -14,10 +14,13 @@ class MediaForm(forms.ModelForm):
     class Meta:
         model = Media
         fields = (
+            "special_state",
             "title",
             "category",
             "new_tags",
             "add_date",
+            "top_image",
+            "body_text",   
             "uploaded_poster",
             "description",
             "state",
@@ -27,7 +30,6 @@ class MediaForm(forms.ModelForm):
             "reported_times",
             "is_reviewed",
             "allow_download",   
-            "body_text",   
         )
         widgets = {
         }
