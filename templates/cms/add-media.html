@@ -26,17 +26,25 @@
 		<div class="media-uploader-wrap">
 			<div class="media-uploader-top-wrap">
 				<div class="media-uploader-top-left-wrap">
-					<h1>Upload media files0</h1>
+					<h1>Create Content</h1>
+					
 				</div>
 				<div class="media-uploader-top-right-wrap"> </div>
 			</div>
+
+
 			<script type="text/template" id="qq-template">
+
 				<div class="media-uploader-bottom-wrap qq-uploader-selector">
 					<div class="media-uploader-bottom-left-wrap">
 						<div class="media-drag-drop-wrap">
 							<div class="media-drag-drop-inner" qq-drop-area-text="Drop files here">
 								<div class="media-drag-drop-content">
-									<div class="media-drag-drop-content-inner">
+									<select id="hero-content-type" name="hero-content-type">
+										<option value="content">Content</option>
+										<option value="hero">Hero</option>
+									</select>
+									<div class="media-drag-drop-content-inner basicContent" id="basicContent" style="display: none;">
 										<span><i class="material-icons">cloud_upload</i></span>
 										<span>Drag and drop files</span>
 										<span>or</span>
@@ -47,10 +55,21 @@
 											<span class="qq-upload-drop-area-text-selector"></span>
 										</div>
 									</div>
+
+
+
+									<div class="media-drag-drop-content-inner heroContent" id="heroContent"  style="display: none;">
+										<span><i class="material-icons">photo_camera_back</i></span>
+											<button class="qq-upload-button-selector" id="createHeroClicked">Create Hero Content</button>
+									</div>
+
+
+
 								</div>
 							</div>
 						</div>
 					</div>
+					
 					<div class="media-uploader-bottom-right-wrap">
 						<ul class="media-upload-items-list qq-upload-list-selector">
 							<li>
@@ -110,6 +129,10 @@
 					</div>
 				</div>
 			</script>
+
+
+
+
 			<div class="media-uploader"></div>
 			<div class="hero-content-creator"></div>
 		</div>
@@ -154,6 +177,9 @@
 {% block bottomimports %}
 <script src="{% static "js/add-media.js" %}"></script>
 <script>
+
+
+
 	document.addEventListener("DOMContentLoaded", function(event) {
 		function getCSRFToken() {
 			var i, cookies, cookie, cookieVal = null;
@@ -234,69 +260,40 @@
 				},
 			},
 		});
-		var default_concurrent_chunked_uploader2 = new qq.FineUploader({
-			debug: false,
-			element: document.querySelector('.hero-content-creator'),
-			request: {
-				endpoint: '{% url 'uploader:upload' %}',
-				customHeaders: {
-					'X-CSRFToken': getCSRFToken('csrftoken'),
-				},
-			},
-			retry: {
-				enableAuto: true,
-				maxAutoAttempts: 2,
-			},
-			validation: {
-				itemLimit: {{UPLOAD_MAX_FILES_NUMBER}},
-				sizeLimit: {{UPLOAD_MAX_SIZE}},
-			},
-			chunking: {
-				enabled: true,
-				concurrent: {
-					enabled: true,
-				},
-				success: {
-					endpoint: '{% url 'uploader:upload' %}?done',
-				},
-			},
-			callbacks: {
-				onError: function(id, name, errorReason, xhrOrXdr) {
-					console.warn(qq.format("Error on file number {} - {}.  Reason: {}", id, name, errorReason));
-				},
-				onComplete: function( id, name, response, request ) {
+		window.uploader = default_concurrent_chunked_uploader;
+		document.getElementById('createHeroClicked').addEventListener('click', function() {
+			console.log('createHeroClicked');
 
-					if( response.success ){
-
-						if( response.media_url ) {
-							if( 1 === this._currentItemLimit ) {
-								setTimeout(function(){ window.location.href = response.media_url; }, 500);
-								return;
-							}
-						}
-
-						var listEl = document.querySelector( '.qq-file-id-' + id );
-						var viewFileEl = listEl.querySelector( '.view-uploaded-media-link' );
-
-						if( listEl ){
-							var fileUrl = response.media_url;
-							listEl.style.cursor = 'pointer';
-							listEl.addEventListener( 'click', function(ev){
-								ev.preventDefault();
-								ev.stopPropagation();
-								var win = window.open( fileUrl, '_blank' );
-								win.focus();
-							});
-						}
-
-						if( viewFileEl ){
-							viewFileEl.setAttribute( 'href', response.media_url );
-							viewFileEl.setAttribute( 'class', 'view-uploaded-media-link' );
-						}
-					}
-				},
-			},
+			console.log(window.uploader);
+			fetch('/static/images/169black.jpg')
+        .then(response => response.blob())
+        .then(html => {
+            var file = new File([html], 'untitled.jpg', {type: 'image/jpeg'});
+			window.uploader.addFiles([file]);
+        });
 		});
+		document.getElementById('hero-content-type').addEventListener('change', function() {
+    // Get the selected value
+    var selectedValue = this.value;
+
+    // Get the divs
+    var contentDiv = document.getElementById('basicContent');
+    var heroDiv = document.getElementById('heroContent');
+    // Show or hide divs based on the selected value
+    if (selectedValue === 'content') {
+        contentDiv.style.display = 'table-cell';
+        heroDiv.style.display = 'none';
+    } else if (selectedValue === 'hero') {
+        heroDiv.style.display = 'table-cell';
+        contentDiv.style.display = 'none';
+    }
+});
+document.getElementById('hero-content-type').dispatchEvent(new Event('change'));
+
 	});
+
+
+	
+
 </script>
 {% endblock bottomimports %}
