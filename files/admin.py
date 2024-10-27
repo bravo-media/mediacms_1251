@@ -16,6 +16,7 @@ class MediaAdmin(admin.ModelAdmin):
         "title",
         "user",
         "add_date",
+        "font_color",
         "media_type",
         "duration",
         "state",

@@ -26,7 +26,7 @@
 		<div class="media-uploader-wrap">
 			<div class="media-uploader-top-wrap">
 				<div class="media-uploader-top-left-wrap">
-					<h1>Upload media files</h1>
+					<h1>Upload media files0</h1>
 				</div>
 				<div class="media-uploader-top-right-wrap"> </div>
 			</div>
@@ -111,6 +111,7 @@
 				</div>
 			</script>
 			<div class="media-uploader"></div>
+			<div class="hero-content-creator"></div>
 		</div>
 
 	{% else %}
@@ -173,6 +174,69 @@
 		var default_concurrent_chunked_uploader = new qq.FineUploader({
 			debug: false,
 			element: document.querySelector('.media-uploader'),
+			request: {
+				endpoint: '{% url 'uploader:upload' %}',
+				customHeaders: {
+					'X-CSRFToken': getCSRFToken('csrftoken'),
+				},
+			},
+			retry: {
+				enableAuto: true,
+				maxAutoAttempts: 2,
+			},
+			validation: {
+				itemLimit: {{UPLOAD_MAX_FILES_NUMBER}},
+				sizeLimit: {{UPLOAD_MAX_SIZE}},
+			},
+			chunking: {
+				enabled: true,
+				concurrent: {
+					enabled: true,
+				},
+				success: {
+					endpoint: '{% url 'uploader:upload' %}?done',
+				},
+			},
+			callbacks: {
+				onError: function(id, name, errorReason, xhrOrXdr) {
+					console.warn(qq.format("Error on file number {} - {}.  Reason: {}", id, name, errorReason));
+				},
+				onComplete: function( id, name, response, request ) {
+
+					if( response.success ){
+
+						if( response.media_url ) {
+							if( 1 === this._currentItemLimit ) {
+								setTimeout(function(){ window.location.href = response.media_url; }, 500);
+								return;
+							}
+						}
+
+						var listEl = document.querySelector( '.qq-file-id-' + id );
+						var viewFileEl = listEl.querySelector( '.view-uploaded-media-link' );
+
+						if( listEl ){
+							var fileUrl = response.media_url;
+							listEl.style.cursor = 'pointer';
+							listEl.addEventListener( 'click', function(ev){
+								ev.preventDefault();
+								ev.stopPropagation();
+								var win = window.open( fileUrl, '_blank' );
+								win.focus();
+							});
+						}
+
+						if( viewFileEl ){
+							viewFileEl.setAttribute( 'href', response.media_url );
+							viewFileEl.setAttribute( 'class', 'view-uploaded-media-link' );
+						}
+					}
+				},
+			},
+		});
+		var default_concurrent_chunked_uploader2 = new qq.FineUploader({
+			debug: false,
+			element: document.querySelector('.hero-content-creator'),
 			request: {
 				endpoint: '{% url 'uploader:upload' %}',
 				customHeaders: {

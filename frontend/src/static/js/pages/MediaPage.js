@@ -4,6 +4,7 @@ import { MediaPageStore } from '../utils/stores/';
 import AttachmentViewer from '../components/media-viewer/AttachmentViewer';
 import AudioViewer from '../components/media-viewer/AudioViewer';
 import ImageViewer from '../components/media-viewer/ImageViewer';
+import CompositeImageViewer from '../components/media-viewer/CompositeImageViewer';
 import PdfViewer from '../components/media-viewer/PdfViewer';
 import VideoViewer from '../components/media-viewer/VideoViewer';
 import { _VideoMediaPage } from './_VideoMediaPage';
@@ -50,6 +51,9 @@ export class MediaPage extends _VideoMediaPage {
       case 'audio':
         return <AudioViewer />;
       case 'image':
+        if(mediaData.special_state !== null && mediaData.special_state !== 'normal') {
+          return <CompositeImageViewer />;
+        }
         return <ImageViewer />;
       case 'pdf':
         return <PdfViewer />;

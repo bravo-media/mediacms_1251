@@ -15,12 +15,21 @@ class MediaForm(forms.ModelForm):
         model = Media
         fields = (
             "special_state",
+            "aspect_ratio",   
             "title",
             "category",
             "new_tags",
             "add_date",
             "top_image",
             "body_text",   
+            "font_size",   
+            "font_bold",   
+            "font_color",   
+            "font_align",   
+            "content_size_scale",   
+            "padding_content",   
+            "flex_direction",   
+            "background_image",   
             "uploaded_poster",
             "description",
             "state",
@@ -33,6 +42,7 @@ class MediaForm(forms.ModelForm):
         )
         widgets = {
             'add_date': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+            'font_color': forms.TextInput(attrs={'type': 'color'}),  # Use ColorInput directly
         }
     def __init__(self, user, *args, **kwargs):
         self.user = user

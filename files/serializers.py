@@ -78,7 +78,16 @@ class MediaSerializer(serializers.ModelSerializer):
             "size",
             "body_text",
             "special_state",
+            "font_size",   
+            "font_bold",   
+            "font_align",   
+            "background_image",   
+            "font_color",   
+            "aspect_ratio",   
             "top_image",
+            "content_size_scale",
+            "padding_content",
+            "flex_direction",
         )
 
 
@@ -148,7 +157,18 @@ class SingleMediaSerializer(serializers.ModelSerializer):
             "ratings_info",
             "add_subtitle_url",
             "allow_download",
-            "body_text"
+            "body_text",
+            "special_state",
+            
+            "font_size",   
+            "font_bold",   
+            "font_align",   
+            "background_image",    
+            "font_color",    
+            "aspect_ratio",   
+            "content_size_scale",    
+            "padding_content",
+            "flex_direction",
         )
 
 

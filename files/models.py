@@ -53,6 +53,27 @@ SPECIAL_STATES = (
     ("topimage", "Top Image, Body Text"),
 )
 
+
+FONT_ALIGNMENT = (
+    ("center", "Cener"),
+    ("left", "Left"),
+    ("right", "Right"),
+)
+
+FLEX_DIRECTION = (
+    ("row", "Row"),
+    ("column", "Column"),
+)
+
+ASPECT_RATIOS = (
+    ("original", "Original"),
+    ("16:9", "16:9"),
+    ("4:3", "4:3"),
+    ("1:1", "1:1"),
+    ("3:4", "3:4"),
+    ("9:16", "9:16"),
+)
+
 PLAYLIST_PLAY_TYPE = (
     ("normal", "Normal"),
     ("schedueleddate", "Schedueled Date Range"),
@@ -116,6 +137,10 @@ def original_thumbnail_file_path(instance, filename):
     return settings.THUMBNAIL_UPLOAD_DIR + "user/{0}/{1}".format(instance.user.username, filename)
 
 def top_thumbnail_file_path(instance, filename):
+    """Helper function to place top image thumbnail file"""
+
+    return settings.BACKGROUND_UPLOAD_DIR + "user/{0}/{1}".format(instance.user.username, filename)
+def background_image_file_path(instance, filename):
     """Helper function to place top image thumbnail file"""
 
     return settings.BACKGROUND_UPLOAD_DIR + "user/{0}/{1}".format(instance.user.username, filename)
@@ -266,7 +291,7 @@ class Media(models.Model):
         choices=SPECIAL_STATES,
         default="normal",
         db_index=True,
-        help_text="Create composited media.",
+        help_text="Create different types of content based on the input media by setting this state.",
     )
 
 
@@ -313,6 +338,18 @@ class Media(models.Model):
         verbose_name="Upload Top Image",
         help_text="This image will be placed above the body text.",
         upload_to=top_thumbnail_file_path,
+        processors=[ResizeToFit(width=1920, height=1080)],
+        format="JPEG",
+        options={"quality": 85},
+        blank=True,
+        max_length=500,
+    )
+
+
+    background_image = ProcessedImageField(
+        verbose_name="Upload Background Image",
+        help_text="This image will be placed above the body text.",
+        upload_to=background_image_file_path,
         processors=[ResizeToFit(width=720, height=None)],
         format="JPEG",
         options={"quality": 85},
@@ -322,16 +359,30 @@ class Media(models.Model):
 
 
     logo_image = ProcessedImageField(
-        verbose_name="Upload Logo Image",
-        help_text="This image will be placed above the body text.",
+        verbose_name="Upload BG Image",
+        help_text="This image will be placed behind your main media.",
         upload_to=logo_thumbnail_file_path,
         processors=[ResizeToFit(width=720, height=None)],
         format="JPEG",
-        options={"quality": 85},
+        options={"quality": 100},
         blank=True,
         max_length=500,
     )
+    aspect_ratio = models.CharField(max_length=20,
+        choices=ASPECT_RATIOS, default="original", help_text="Force aspect ratio for the media")
+    
+    font_size = models.IntegerField(default=20, help_text="Font size for the body text")
+    font_bold = models.BooleanField(default=True, help_text="Font bold for the body text")
+    font_align = models.CharField(max_length=20,
+        choices=FONT_ALIGNMENT, default="center", help_text="Font align for the body text")
+    
 
+    font_color = models.CharField(max_length=200, default="#000000", help_text="Font color for the body text")
+
+    padding_content= models.IntegerField(default=50, help_text="Padding in pixels for the content over the background")
+    flex_direction = models.CharField(max_length=20, choices=FLEX_DIRECTION, default="column", help_text="Flex direction for the content over the background")
+    content_size_scale = models.IntegerField(default=100, help_text="Scale the content size in percentage")
+    
     user = models.ForeignKey("users.User", on_delete=models.CASCADE, help_text="user that uploads the media")
 
     user_featured = models.BooleanField(default=False, help_text="Featured by the user")
